@@ -14,10 +14,14 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 
 Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
   return (Context context, AwsALBEvent request) async {
-    print("context");
-    print(context);
-    print("event");
-    print(request);
+    print("httpmethod");
+    print(request.httpMethod);
+    print("path");
+    print(request.path);
+    print("headers");
+    print(request.headers);
+    print("body");
+    print(request.body);
 
     var shelfRequest = shelf.Request(
       request.httpMethod, // is the ! unsafe?
