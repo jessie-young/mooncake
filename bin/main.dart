@@ -14,7 +14,7 @@ Success! I created my first Dart Lambda function.
 
     /// Returns the response to the ALB.
     return InvocationResult(
-        context.requestId, AwsALBResponse.fromString(response));
+        context.requestId!, AwsALBResponse.fromString(response));
   };
 
   /// The Runtime is a singleton.
