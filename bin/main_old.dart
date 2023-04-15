@@ -12,11 +12,8 @@ import 'package:http/http.dart' as http;
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 
-// typedef AwsApiGatewayHandler = Future<AwsApiGatewayResponse> Function(
-//     AwsApiGatewayEvent request);
-
-Handler<AwsApiGatewayEvent> createLambdaFunction(shelf.Handler handler) {
-  return (Context context, AwsApiGatewayEvent request) async {
+Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
+  return (Context context, AwsALBEvent request) async {
     var shelfRequest = shelf.Request(
       request.httpMethod!, // is the ! unsafe?
       Uri.parse(request.path!),
@@ -34,11 +31,15 @@ Handler<AwsApiGatewayEvent> createLambdaFunction(shelf.Handler handler) {
 
     var body = await shelfResponse.readAsString();
 
-    return AwsApiGatewayResponse(
-      statusCode: shelfResponse.statusCode,
-      headers: headers,
-      body: body,
-    );
+    // return AwsApiGatewayResponse(
+    //   statusCode: shelfResponse.statusCode,
+    //   headers: headers,
+    //   body: body,
+    // );
+
+    // TODO return headers
+    return InvocationResult(
+        context.requestId!, AwsALBResponse.fromString(body));
   };
 }
 
@@ -66,24 +67,6 @@ Future<void> main() async {
   // var runtime = Runtime();
   // await runtime.run(lambda);
   Runtime()
-    ..registerHandler<AwsApiGatewayEvent>("main.handler", lambda)
+    ..registerHandler<AwsALBEvent>("hello.ALB", lambda)
     ..invoke();
 }
-
-// // This function is called by the AWS Lambda runtime to handle incoming events
-// Future<Map<String, dynamic>> handleLambdaEvent(
-//     Map<String, dynamic> event) async {
-//   var handler = my_server.handler;
-
-//   // Parse the incoming event into a shelf.Request
-//   var request = shelf_io.deserializeRequest(event);
-
-//   // Call the shelf.Handler to handle the request
-//   var response = await handler(request);
-
-//   // Convert the shelf.Response into a format that can be returned by the Lambda function
-//   var serializedResponse = shelf_io.serializeResponse(response);
-
-//   // Return the response as a Map that can be returned by the Lambda function
-//   return json.decode(serializedResponse);
-// }
