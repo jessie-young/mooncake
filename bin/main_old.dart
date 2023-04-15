@@ -8,20 +8,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:aws_lambda_dart_runtime/runtime/context.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 
 Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
   return (Context context, AwsALBEvent request) async {
     var shelfRequest = shelf.Request(
-      request.httpMethod!, // is the ! unsafe?
-      Uri.parse(request.path!),
+      request.httpMethod, // is the ! unsafe?
+      Uri.parse(request.path),
       headers: Map<String, String>.from(
           request.headers as Map<String, dynamic>), // is this valid?
       body: request.body == null
           ? null
-          : Stream.fromIterable([request.body!.codeUnits]),
+          : Stream.fromIterable([request.body.codeUnits]),
     );
 
     var shelfResponse = await handler(shelfRequest);
@@ -38,8 +38,7 @@ Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
     // );
 
     // TODO return headers
-    return InvocationResult(
-        context.requestId!, AwsALBResponse.fromString(body));
+    return InvocationResult(context.requestId, AwsALBResponse.fromString(body));
   };
 }
 
