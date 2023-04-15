@@ -22,6 +22,8 @@ Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
     print(request.headers);
     print("body");
     print(request.body);
+    print("full request");
+    print(request.toString());
 
     var shelfRequest = shelf.Request(
       request.httpMethod, // is the ! unsafe?
