@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:aws_lambda_dart_runtime/aws_lambda_dart_runtime.dart';
 import 'server.dart' as my_server;
 import 'package:shelf/shelf_io.dart' as shelf_io;
-import 'create-lambda-function.dart';
+// import 'create-lambda-function.dart';
 
 import 'dart:async';
 import 'dart:convert';
@@ -14,6 +14,11 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 
 Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
   return (Context context, AwsALBEvent request) async {
+    print("context");
+    print(context);
+    print("event");
+    print(request);
+
     var shelfRequest = shelf.Request(
       request.httpMethod, // is the ! unsafe?
       Uri.parse(request.path),
