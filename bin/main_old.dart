@@ -31,6 +31,9 @@ Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
     var httpsUri =
         Uri(scheme: 'https', host: headersMap["Host"], path: request.path);
 
+    print("got https uri: ");
+    print(httpsUri);
+
     var shelfRequest = shelf.Request(
       request.httpMethod,
       httpsUri,
