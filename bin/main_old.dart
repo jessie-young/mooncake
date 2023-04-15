@@ -22,12 +22,18 @@ Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
     print(request.headers);
     print("body");
     print(request.body);
-    print("full request");
-    print(request.toString());
+
+    Map<String, String> headersMap =
+        Map<String, String>.from(request.headers as Map<String, dynamic>);
+    print("host from headers");
+    print(headersMap["Host"]);
+
+    var httpsUri =
+        Uri(scheme: 'https', host: headersMap["Host"], path: request.path);
 
     var shelfRequest = shelf.Request(
-      request.httpMethod, // is the ! unsafe?
-      Uri.parse(request.path),
+      request.httpMethod,
+      httpsUri,
       headers: Map<String, String>.from(
           request.headers as Map<String, dynamic>), // is this valid?
       body: request.body == null
