@@ -7,6 +7,7 @@ import 'package:shelf_router/shelf_router.dart';
 
 // Configure routes.
 final _router = Router()
+  // for each route here, set up different api gateway route?
   ..get('/hello', _hello)
   ..get('/mooncake', _mooncakeHandler)
   ..get('/chookity', _chookityHandler);

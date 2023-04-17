@@ -14,31 +14,39 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 
 Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
   return (Context context, AwsALBEvent request) async {
-    print("httpmethod");
-    print(request.httpMethod);
-    print("path");
-    print(request.path);
-    print("headers");
-    print(request.headers);
-    print("body");
-    print(request.body);
-
     Map<String, String> headersMap =
         Map<String, String>.from(request.headers as Map<String, dynamic>);
-    print("host from headers");
-    print(headersMap["Host"]);
 
-    var httpsUri =
-        Uri(scheme: 'https', host: headersMap["Host"], path: request.path);
+    // var httpsUri =
+    // Uri(scheme: 'https', host: headersMap["Host"], path: request.path);
 
-    print("got https uri: ");
-    print(httpsUri);
+    // request.path is relative, like /mooncake
+    // should parse request.path, strip out the name of the function
+    // from the path
+    // so if route is /mooncake/mooncake, return just /mooncake
+    // ideally want host to include the name of the function
+    // workaround: get the function name
+    // need to have this custom logic so that you can deploy to cakework
+    //
+    List<String> segments = request.path.split('/');
+    String relativePath = '/' + segments.sublist(1).join('/');
+    Uri uri = Uri(path: relativePath);
+
+    // var httpsUri = Uri(path: request.path);
+    // Uri(scheme: 'https', host: headersMap["Host"], path: request.path);
+
+    // should strip out the first part of the route
+    // print("got https uri: ");
+    // print(httpsUri);
+
+    // is it possible to invoke a shelf handler but only pass relative arguments?
+
+    // Q: should we create different api gateway
 
     var shelfRequest = shelf.Request(
       request.httpMethod,
-      httpsUri,
-      headers: Map<String, String>.from(
-          request.headers as Map<String, dynamic>), // is this valid?
+      uri,
+      headers: headersMap,
       body: request.body == null
           ? null
           : Stream.fromIterable([request.body.codeUnits]),
