@@ -30,10 +30,10 @@ Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
     //
     List<String> segments = request.path.split('/');
     String relativePath = '/' + segments.sublist(1).join('/');
-    Uri uri = Uri(path: relativePath);
 
     // var httpsUri = Uri(path: request.path);
-    // Uri(scheme: 'https', host: headersMap["Host"], path: request.path);
+    Uri uri =
+        Uri(scheme: 'https', host: headersMap["Host"], path: relativePath);
 
     // should strip out the first part of the route
     // print("got https uri: ");
