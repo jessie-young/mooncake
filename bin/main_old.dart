@@ -36,8 +36,8 @@ Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
         Uri(scheme: 'https', host: headersMap["Host"], path: relativePath);
 
     // should strip out the first part of the route
-    // print("got https uri: ");
-    // print(httpsUri);
+    print("got uri: ");
+    print(uri);
 
     // is it possible to invoke a shelf handler but only pass relative arguments?
 
