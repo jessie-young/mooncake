@@ -2,12 +2,9 @@ import 'dart:io';
 import 'mooncake.dart';
 import 'mooncake-fancy.dart';
 import 'package:shelf/shelf.dart';
-import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-// Configure routes.
 final _router = Router()
-  // for each route here, set up different api gateway route?
   ..get('/hello', _hello)
   ..get('/mooncake', _mooncakeHandler)
   ..get('/chookity', _chookityHandler);
