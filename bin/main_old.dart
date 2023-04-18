@@ -82,7 +82,7 @@ Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
     return InvocationResult(
         context.requestId,
         AwsApiGatewayResponse(
-            body: json.encode(body),
+            body: body,
             isBase64Encoded: false,
             headers: request.headers,
             statusCode: shelfResponse.statusCode));
