@@ -36,6 +36,7 @@ Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
     Uri uri =
         Uri(scheme: 'https', host: headersMap["Host"], path: request.path);
 
+    print("woot");
     print("got uri");
     print(uri);
 
