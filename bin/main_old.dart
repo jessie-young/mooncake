@@ -57,6 +57,7 @@ Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
 
     var shelfResponse = await handler(shelfRequest);
 
+    // need to do this?
     var headers = <String, String>{};
     shelfResponse.headers.forEach((name, value) => headers[name] = value);
 
@@ -84,7 +85,7 @@ Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
         AwsApiGatewayResponse(
             body: body,
             isBase64Encoded: false,
-            headers: request.headers,
+            headers: shelfResponse.headers,
             statusCode: shelfResponse.statusCode));
   };
 }
