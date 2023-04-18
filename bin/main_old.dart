@@ -68,8 +68,24 @@ Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
     //   body: body,
     // );
 
+// final response = AwsApiGatewayResponse.fromJson({
+//   "message": "Hello, world!",
+//   "data": {
+//     "name": "John",
+//     "age": 30
+//   }
+// }, statusCode: 200, headers: {
+//   "Content-Type": "application/json"
+// });
+
     // TODO return headers
-    return InvocationResult(context.requestId, AwsALBResponse.fromString(body));
+    return InvocationResult(
+        context.requestId,
+        AwsApiGatewayResponse(
+            body: json.encode(body),
+            isBase64Encoded: false,
+            headers: request.headers,
+            statusCode: shelfResponse.statusCode));
   };
 }
 
