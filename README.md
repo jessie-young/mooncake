@@ -1,72 +1,25 @@
-### Mooncake
+## Files
+- `bin/server.dart`: The Shelf server entrypoint which contains the Shelf handler. This is defined by the user.
+- `bin/handler_exporter.dart`: Running this will modify the user's Shelf server entrypoint so that it exports the Shelf handler, making it so that the lambda runner can import the handler and break it down into AWS Lambda routes.
+- `bin/generate_lambda_main.dart`: Running this generates the AWS Lambda function handler which we will then compile, zip, and deploy.
 
-```shell
-dart run
-curl localhost:8080/moooncake
-
-# for fancy terminals
-curl localhost:8080/chookity
+## Creating AWS Lambda deployment package
+```
+cd bin
+dart run handler_exporter.dart server.dart
+dart run generate_lambda_main.dart server.dart
+dart compile exe bin/main_old.dart -o bootstrap && zip -j lambda.zip bootstrap
 ```
 
-Removed handlers for future reference:
+## Deploying to AWS Lambda
+Create an AWS Lambda function using the lambda.zip. Create and deploy an API Gateway REST API and create a path using the `{proxy+}` notation to match all sub-routes. 
 
-```dart
-Response _rootHandler(Request req) {
-  return Response.ok('Hello, World!\n');
-}
+## Sample endpoint
+Here's an endpoint you can invoke to test the API.
 
-Response _echoHandler(Request request) {
-  final message = request.params['message'];
-  return Response.ok('$message\n');
-}
-```
+https://vz2xim1m05.execute-api.us-west-2.amazonaws.com/prod
 
-A server app built using [Shelf](https://pub.dev/packages/shelf),
-configured to enable running with [Docker](https://www.docker.com/).
+Test it out!
+`curl --location --request GET 'https://vz2xim1m05.execute-api.us-west-2.amazonaws.com/prod/mooncake'`
 
-This sample code handles HTTP GET requests to `/` and `/echo/<message>`
-
-# Running the sample
-
-## Running with the Dart SDK
-
-You can run the example with the [Dart SDK](https://dart.dev/get-dart)
-like this:
-
-```
-$ dart run bin/server.dart
-Server listening on port 8080
-```
-
-And then from a second terminal:
-```
-$ curl http://0.0.0.0:8080
-Hello, World!
-$ curl http://0.0.0.0:8080/echo/I_love_Dart
-I_love_Dart
-```
-
-## Running with Docker
-
-If you have [Docker Desktop](https://www.docker.com/get-started) installed, you
-can build and run with the `docker` command:
-
-```
-$ docker build . -t myserver
-$ docker run -it -p 8080:8080 myserver
-Server listening on port 8080
-```
-
-And then from a second terminal:
-```
-$ curl http://0.0.0.0:8080
-Hello, World!
-$ curl http://0.0.0.0:8080/echo/I_love_Dart
-I_love_Dart
-```
-
-You should see the logging printed in the first terminal:
-```
-2021-05-06T15:47:04.620417  0:00:00.000158 GET     [200] /
-2021-05-06T15:47:08.392928  0:00:00.001216 GET     [200] /echo/I_love_Dart
-```
+`curl --location --request GET 'https://vz2xim1m05.execute-api.us-west-2.amazonaws.com/prod/chookity'`
