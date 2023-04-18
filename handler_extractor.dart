@@ -43,11 +43,9 @@ void main(List<String> arguments) {
     final line = lines[i];
 
     modifiedLines.add(line);
-    print("line: " + line);
     if (line.trim().contains('void main')) {
       // Duplicate handler definition line right before main function
       modifiedLines.insert(i, handlerLine);
-      print("found main");
     }
   }
 
