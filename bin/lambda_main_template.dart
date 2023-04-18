@@ -1,5 +1,5 @@
 import 'package:aws_lambda_dart_runtime/aws_lambda_dart_runtime.dart';
-import 'server.dart' as my_server;
+// import 'server.dart' as my_server;
 import 'dart:async';
 import 'package:aws_lambda_dart_runtime/runtime/context.dart';
 import 'package:shelf/shelf.dart' as shelf;

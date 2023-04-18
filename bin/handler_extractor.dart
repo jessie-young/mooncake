@@ -1,6 +1,8 @@
 import 'dart:io';
 
+// this is hidden from the user
 void main(List<String> arguments) {
+  // modify the entry point so that it exports the handler so that it can be imported
   if (arguments.isEmpty) {
     print('Please provide a file path as an argument');
     exit(1);
