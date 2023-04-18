@@ -8,23 +8,11 @@ import 'package:shelf_router/shelf_router.dart';
 
 final _router = Router()
   ..get('/hello', _hello)
-  ..get('/html', _html)
   ..get('/mooncake', _mooncakeHandler)
   ..get('/chookity', _chookityHandler);
 
 Response _hello(Request req) {
   return Response.ok("hello");
-}
-
-Response _html(Request req) {
-  return Response.ok('''
-<html>
-<header><title>My Lambda Function</title></header>
-<body>
-Success! I created my first Dart Lambda function.
-</body>
-</html>
-''');
 }
 
 Response _mooncakeHandler(Request req) {
