@@ -27,17 +27,19 @@ Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
     // ideally want host to include the name of the function
     // workaround: get the function name
     // need to have this custom logic so that you can deploy to cakework
-    //
-    List<String> segments = request.path.split('/');
-    String relativePath = '/' + segments.sublist(1).join('/');
+    // because /mooncake/mooncake isn't getting matched to anything,
+    // not able to get here. only catching requests
+    // List<String> segments = request.path.split('/');
+    // String relativePath = '/' + segments.sublist(1).join('/');
 
     // var httpsUri = Uri(path: request.path);
     Uri uri =
-        Uri(scheme: 'https', host: headersMap["Host"], path: relativePath);
+        Uri(scheme: 'https', host: headersMap["Host"], path: request.path);
+
+    print("got uri");
+    print(uri);
 
     // should strip out the first part of the route
-    print("got uri: ");
-    print(uri);
 
     // is it possible to invoke a shelf handler but only pass relative arguments?
 
