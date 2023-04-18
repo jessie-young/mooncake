@@ -8,7 +8,7 @@ import 'package:shelf_router/shelf_router.dart';
 
 final _router = Router()
   ..get('/hello', _hello)
-  ..get('/world', _world)
+  ..get('/html', _html)
   ..get('/mooncake', _mooncakeHandler)
   ..get('/chookity', _chookityHandler);
 
@@ -16,7 +16,7 @@ Response _hello(Request req) {
   return Response.ok("hello");
 }
 
-Response _world(Request req) {
+Response _html(Request req) {
   return Response.ok('''
 <html>
 <header><title>My Lambda Function</title></header>
