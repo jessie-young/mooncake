@@ -5,12 +5,12 @@ import 'dart:io';
 
 void main(List<String> args) {
   if (args.length < 1) {
-    print('Usage: dart add_import.dart <source_file>');
+    print('Usage: dart generate_lambda_main.dart <handler_file>');
     return;
   }
 
-  final sourceFile = File(args[0]);
-  // final destFile = File(args[1]);
+  final sourceFile = File("lambda_main_template.dart");
+  final handlerFile = File(args[0]);
   final destFile = File("lambda_main.dart");
 
   // Read the contents of the source file.
@@ -20,7 +20,7 @@ void main(List<String> args) {
   destFile.writeAsStringSync(sourceContents);
 
   // Add an import statement for the source file to the new file.
-  final importLine = "import '${sourceFile.path}' as my_server;\n";
+  final importLine = "import '${handlerFile.path}' as my_server;\n";
   final destContents = importLine + sourceContents;
   destFile.writeAsStringSync(destContents);
 }

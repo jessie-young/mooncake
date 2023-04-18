@@ -1,39 +1,45 @@
 import 'server.dart' as my_server;
-import 'dart:io';
-import 'package:shelf/shelf_io.dart';
+import 'package:aws_lambda_dart_runtime/aws_lambda_dart_runtime.dart';
+import 'dart:async';
+import 'package:aws_lambda_dart_runtime/runtime/context.dart';
+import 'package:shelf/shelf.dart' as shelf;
 
-import 'mooncake.dart';
-import 'mooncake-fancy.dart';
-import 'package:shelf/shelf.dart';
-import 'package:shelf_router/shelf_router.dart';
+Handler<AwsALBEvent> createLambdaFunction(shelf.Handler handler) {
+  return (Context context, AwsALBEvent request) async {
+    Map<String, String> headersMap = Map<String, String>.from(request.headers);
 
-final _router = Router()
-  ..get('/hello', _hello)
-  ..get('/mooncake', _mooncakeHandler)
-  ..get('/chookity', _chookityHandler);
+    Uri uri =
+        Uri(scheme: 'https', host: headersMap["Host"], path: request.path);
 
-Response _hello(Request req) {
-  return Response.ok("hello");
+    var shelfRequest = shelf.Request(
+      request.httpMethod,
+      uri,
+      headers: headersMap,
+      body: request.body == null
+          ? null
+          : Stream.fromIterable([request.body.codeUnits]),
+    );
+
+    var shelfResponse = await handler(shelfRequest);
+
+    var body = await shelfResponse.readAsString();
+
+    return InvocationResult(
+        context.requestId,
+        AwsApiGatewayResponse(
+            body: body,
+            isBase64Encoded: false,
+            headers: shelfResponse.headers,
+            statusCode: shelfResponse.statusCode));
+  };
 }
 
-Response _mooncakeHandler(Request req) {
-  return Response.ok(mooncake);
-}
+Future<void> main() async {
+  var handler = my_server.handler;
 
-Response _chookityHandler(Request req) {
-  return Response.ok(chookity);
-}
+  var lambda = createLambdaFunction(handler);
 
-Handler handler = Pipeline().addMiddleware(logRequests()).addHandler(_router);
-void main(List<String> args) async {
-  // Use any available host or container IP (usually `0.0.0.0`).
-  final ip = InternetAddress.anyIPv4;
-
-  // Configure a pipeline that logs requests.
-  Handler handler = Pipeline().addMiddleware(logRequests()).addHandler(_router);
-
-  // For running in containers, we respect the PORT environment variable.
-  final port = int.parse(Platform.environment['PORT'] ?? '8080');
-  final server = await serve(handler, ip, port);
-  print('Server listening on port ${server.port}');
+  Runtime()
+    ..registerHandler<AwsALBEvent>("hello.ALB", lambda)
+    ..invoke();
 }
